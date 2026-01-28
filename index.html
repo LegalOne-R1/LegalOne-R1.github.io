@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegalOne: A Family of Foundation Models for Reliable Legal Reasoning</title>
+    <link rel="icon" type="image/png" href="resource/LegalOne.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #7c3aed;
+            --accent-color: #06b6d4;
+            --bg-gradient-start: #f8fafc;
+            --bg-gradient-end: #e2e8f0;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --success-color: #22c55e;
+            --news-bg: #fef3c7;
+            --news-border: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 60px 0 40px;
+            background: linear-gradient(180deg, #ffffff 0%, transparent 100%);
+        }
+
+        .logo-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 1.8rem;
+            }
+            .logo {
+                width: 60px;
+                height: 60px;
+            }
+        }
+
+        /* Authors Section */
+        .authors {
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+
+        .authors sup {
+            font-size: 0.7em;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .affiliations {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+
+        .affiliations sup {
+            font-size: 0.75em;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-right: 2px;
+        }
+
+        .footnote {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+
+        /* Buttons Section */
+        .buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 50px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+            border-color: var(--primary-color);
+        }
+
+        .btn img {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+        }
+
+        /* News Section */
+        .news-section {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1px solid var(--news-border);
+            border-radius: 16px;
+            padding: 24px 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.1);
+        }
+
+        .news-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .news-item {
+            font-size: 1rem;
+            color: #78350f;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(146, 64, 14, 0.2);
+        }
+
+        .news-item:last-child {
+            border-bottom: none;
+        }
+
+        .news-date {
+            font-weight: 600;
+            color: #b45309;
+        }
+
+        /* Section Styles */
+        .section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary-color);
+            display: inline-block;
+        }
+
+        /* Introduction Section */
+        .intro-content {
+            display: grid;
+            grid-template-columns: 1.4fr 1.1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (max-width: 900px) {
+            .intro-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .intro-image {
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .intro-image:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .intro-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            text-align: left;
+        }
+
+        .intro-text strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Pipeline Section */
+        .pipeline-text {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            text-align: left;
+        }
+
+        .pipeline-text strong {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .pipeline-image {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .pipeline-image:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Results Section */
+        .results-points {
+            margin-bottom: 30px;
+        }
+
+        .result-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+
+        .result-point::before {
+            content: "•";
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            line-height: 1.2;
+            font-weight: bold;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+            margin-left: -20px;
+            margin-right: -20px;
+        }
+
+        @media (max-width: 768px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+                margin-left: 0;
+                margin-right: 0;
+            }
+        }
+
+        .chart-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chart-img {
+            width: 100%;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-img:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .chart-hint {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-style: italic;
+        }
+
+        .chart-hint::before {
+            content: "💡";
+            font-size: 1rem;
+        }
+
+        .results-section {
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+
+        .results-section .charts-container {
+            margin-left: -10px;
+            margin-right: -10px;
+        }
+
+        /* Case Study Section */
+        .case-intro {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+        }
+
+        .case-intro::before {
+            content: "•";
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            line-height: 1.2;
+            font-weight: bold;
+        }
+
+        .case-block {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .case-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .case-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        @media (max-width: 900px) {
+            .case-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .case-answer, .case-structure {
+            padding: 25px;
+        }
+
+        .case-answer {
+            border-right: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 900px) {
+            .case-answer {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+        }
+
+        .case-label {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .answer-content {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            color: var(--text-primary);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            white-space: pre-line;
+            border: 1px solid #bfdbfe;
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .structure-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .structure-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            color: var(--success-color);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .expand-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+            border: none;
+            border-top: 1px solid var(--border-color);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .expand-btn:hover {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+        }
+
+        .expand-btn .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .expand-btn.expanded .arrow {
+            transform: rotate(180deg);
+        }
+
+        .full-response {
+            display: none;
+            padding: 25px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border-color);
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .full-response.show {
+            display: block;
+        }
+
+        .full-response-content {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            white-space: pre-line;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Citation Section */
+        .citation-wrapper {
+            position: relative;
+        }
+
+        .citation-block {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-radius: 12px;
+            padding: 25px;
+            padding-top: 50px;
+            overflow-x: auto;
+        }
+
+        .citation-block pre {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 0.9rem;
+            color: #a5f3fc;
+            margin: 0;
+            line-height: 1.7;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: #e2e8f0;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .copy-btn.copied {
+            background: var(--success-color);
+            border-color: var(--success-color);
+        }
+
+        /* Navigation Buttons */
+        .nav-buttons {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            transition: all 0.3s ease;
+            opacity: 0.9;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1);
+            opacity: 1;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .nav-buttons {
+                bottom: 20px;
+                right: 20px;
+            }
+            .nav-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox-close:hover {
+            opacity: 0.7;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-title">
+                <img src="resource/LegalOne.png" alt="LegalOne Logo" class="logo">
+                <h1 class="main-title">LegalOne: A Family of Foundation Models for Reliable Legal Reasoning</h1>
+            </div>
+
+            <p class="authors">
+                Haitao Li<sup>1,2</sup>, Yifan Chen<sup>1,2</sup>, Shuo Miao<sup>1,2</sup>, Qian Dong<sup>1,2</sup>, Jia Chen<sup>1,2</sup>, Yiran Hu<sup>3,†</sup>,<br>
+                Junjie Chen<sup>1,2</sup>, Minghao Qin<sup>4,†</sup>, Qingyao Ai<sup>1,2,∗</sup>, Yiqun Liu<sup>1,2</sup>, Cheng Luo<sup>2,5</sup>,<br>
+                Quan Zhou<sup>2,5</sup>, Ya Zhang<sup>2,5</sup>, Jikun Hu<sup>2,5</sup>
+            </p>
+
+            <p class="affiliations">
+                <sup>1</sup>Department of Computer Science, Tsinghua University &nbsp;&nbsp;
+                <sup>2</sup>Quancheng Laboratory<br>
+                <sup>3</sup>University of Waterloo, Canada &nbsp;&nbsp;
+                <sup>4</sup>China University of Political Science and Law<br>
+                <sup>5</sup>MegaTech.AI Inc
+            </p>
+
+            <p class="footnote">
+                <sup>∗</sup>Corresponding author &nbsp;&nbsp; <sup>†</sup>Work done during internship at Tsinghua University.
+            </p>
+
+            <div class="buttons-container">
+                <a href="https://arxiv.org/abs/" class="btn" target="_blank">
+                    <img src="resource/arxiv.jpg" alt="arXiv">
+                    LegalOne Paper
+                </a>
+                <a href="https://github.com/CSHaitao/LegalOne" class="btn" target="_blank">
+                    <img src="resource/Github.png" alt="GitHub">
+                    LegalOne Repo
+                </a>
+                <a href="https://huggingface.co/CSHaitao/LegalOne-1.7B" class="btn" target="_blank">
+                    <img src="resource/huggingface.svg" alt="Hugging Face">
+                    LegalOne-1.7B
+                </a>
+                <a href="https://huggingface.co/CSHaitao/LegalOne-4B" class="btn" target="_blank">
+                    <img src="resource/huggingface.svg" alt="Hugging Face">
+                    LegalOne-4B
+                </a>
+                <a href="https://huggingface.co/CSHaitao/LegalOne-8B" class="btn" target="_blank">
+                    <img src="resource/huggingface.svg" alt="Hugging Face">
+                    LegalOne-8B
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- News Section -->
+        <section class="news-section">
+            <h2 class="news-title">📢 News</h2>
+            <div class="news-item">
+                <span class="news-date">[2026.01.23]</span> 🎉 LegalOne-1.7B, LegalOne-4B, and LegalOne-8B are now open-sourced! 🚀
+            </div>
+        </section>
+
+        <!-- Introduction Section -->
+        <section class="section">
+            <h2 class="section-title">Introduction</h2>
+            <div class="intro-content">
+                <img src="resource/parameter.png" alt="LegalOne Parameters" class="intro-image" onclick="openLightbox(this.src)">
+                <p class="intro-text">
+                    While Large Language Models (LLMs) have demonstrated impressive general capabilities, their direct application in the legal domain is often hindered by a lack of precise domain knowledge and complexity of performing rigorous multi-step judicial reasoning. To address this gap, we present <strong>LegalOne</strong>, a family of foundational models specifically tailored for the Chinese legal domain. <strong>LegalOne</strong> is developed through a comprehensive three-phase pipeline designed to master legal reasoning. Experimental results demonstrate that <strong>LegalOne</strong> achieves <strong>state-of-the-art</strong> performance across a wide range of legal tasks, surpassing general-purpose LLMs with vastly larger parameter counts through enhanced knowledge density and efficiency.
+                </p>
+            </div>
+        </section>
+
+        <!-- Pipeline Section -->
+        <section class="section">
+            <h2 class="section-title">Pipeline</h2>
+            <p class="pipeline-text">
+                <strong>LegalOne</strong> is developed through a comprehensive three-phase pipeline designed to master legal reasoning. First, during mid-training phase, we propose <strong>Plasticity-Adjusted Sampling (PAS)</strong> to address the challenge of domain adaptation. This perplexity-based scheduler strikes a balance between the acquisition of new knowledge and the retention of original capabilities, effectively establishing a robust legal foundation. Second, during supervised fine-tuning, we employ <strong>Legal Agentic CoT Distillation (LEAD)</strong> to distill explicit reasoning from raw legal texts. Unlike naive distillation, LEAD utilizes an agentic workflow to convert complex judicial processes into structured reasoning trajectories, thereby enforcing factual grounding and logical rigor. Finally, we implement a <strong>Curriculum Reinforcement Learning (RL)</strong> strategy. Through a progressive reinforcement process spanning memorization, understanding, and reasoning, <strong>LegalOne</strong> evolves from simple pattern matching to autonomous and reliable legal reasoning.
+            </p>
+            <img src="resource/overview.png" alt="LegalOne Pipeline Overview" class="pipeline-image" onclick="openLightbox(this.src)">
+        </section>
+
+        <!-- Results Section -->
+        <section class="section results-section">
+            <h2 class="section-title">Results</h2>
+            <div class="results-points">
+                <div class="result-point">
+                    LegalOne-1.7B significantly outperforms the general-purpose Qwen3-1.7B and delivers performance comparable to the much larger GPT-4o.
+                </div>
+                <div class="result-point">
+                    LegalOne-8B delivers highly competitive performance, surpassing significantly larger models such as DeepSeek-v3.2 and Qwen3-Max in multiple dimensions.
+                </div>
+            </div>
+            <div class="charts-container">
+                <div class="chart-wrapper">
+                    <img src="resource/average_chart.png" alt="Average Performance Chart" class="chart-img" onclick="openLightbox(this.src)">
+                </div>
+                <div class="chart-wrapper">
+                    <img src="resource/jec_qa_chart.png" alt="JEC-QA Chart" class="chart-img" onclick="openLightbox(this.src)">
+                </div>
+                <div class="chart-wrapper">
+                    <img src="resource/lexeval_chart.png" alt="LexEval Chart" class="chart-img" onclick="openLightbox(this.src)">
+                </div>
+            </div>
+            <p class="chart-hint">Click on any chart to enlarge</p>
+        </section>
+
+        <!-- Case Study Section -->
+        <section class="section">
+            <h2 class="section-title">Case Study</h2>
+            <div class="case-intro">
+                Legal Analysis and Judgment Prediction of Cases Involving the Crime of Operating a Gambling Establishment
+            </div>
+            <div class="case-block">
+                <div class="case-header">LegalOne-8B</div>
+                <div class="case-content">
+                    <div class="case-answer">
+                        <div class="case-label">📝 Answer</div>
+                        <div class="answer-content">基于以上分析，结合广西壮族自治区量刑细则和司法实践，可能作出如下判决：
+
+1. 邱寿强
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑四年
+理由：
+虽涉案金额大（赌资超六百万元，获利30万元），属"情节严重"
+但具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+
+2. 程锦玲
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑四年
+理由：
+与邱寿强共同犯罪，但作用相对较小（从犯）
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+
+3. 邱豪
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑三年
+理由：
+涉案金额和获利均低于邱寿强、程锦玲
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+
+4. 林声宇
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑三年
+理由：
+涉案金额和获利均低于邱豪
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+
+5. 吴泽天
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑三年
+理由：
+涉案金额和获利与林声宇相近
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+
+6. 李文炳
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑二年
+理由：
+涉案金额和获利均低于其他被告人
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+
+7. 财产处理
+邱寿强、程锦玲的违法所得30万元予以没收，上缴国库
+邱豪的违法所得97637元予以没收，上缴国库
+林声宇的违法所得9024元予以没收，上缴国库
+吴泽天的违法所得11394元予以没收，上缴国库
+李文炳的违法所得22843元予以没收，上缴国库
+作案工具（手机、银行卡等）予以没收</div>
+                    </div>
+                    <div class="case-structure">
+                        <div class="case-label">🔍 Structure</div>
+                        <div class="structure-item">
+                            <span class="check-icon">✓</span>
+                            Comprehensive fact analysis
+                        </div>
+                        <div class="structure-item">
+                            <span class="check-icon">✓</span>
+                            Identify key evidentiary details
+                        </div>
+                        <div class="structure-item">
+                            <span class="check-icon">✓</span>
+                            Systematically applies the Three-Tier Theory of Crime
+                        </div>
+                        <div class="structure-item">
+                            <span class="check-icon">✓</span>
+                            Analyze Constitutive Requirements, Illegality, and Culpability
+                        </div>
+                        <div class="structure-item">
+                            <span class="check-icon">✓</span>
+                            Establish criminal liability
+                        </div>
+                        <div class="structure-item">
+                            <span class="check-icon">✓</span>
+                            Sentencing analysis
+                        </div>
+                        <div class="structure-item">
+                            <span class="check-icon">✓</span>
+                            Cite relevant legal statutes
+                        </div>
+                    </div>
+                </div>
+                <button class="expand-btn" onclick="toggleResponse(this)">
+                    <span>View Full Response</span>
+                    <span class="arrow">▼</span>
+                </button>
+                <div class="full-response">
+                    <div class="full-response-content">一、案件事实梳理
+本案涉及六名被告人（邱寿强、程锦玲、邱豪、林声宇、吴泽天、李文炳）被指控犯开设赌场罪。经审理查明：
+邱寿强、程锦玲：自2017年6月起，邱寿强成为"CC彩球网"赌博网站总代理，与妻子程锦玲共同经营，邱寿强负责发展下级代理和会员，程锦玲负责财务管理（上、下分、提现及分红）。二人涉案赌资超过六百万元，非法获利30万元。
+邱豪：自2017年12月起，作为邱寿强、程锦玲的下线，担任代理（账号H-GV66），发展下线人员，涉案赌资210万余元，非法获利97637元。
+林声宇：自2018年3月起，作为邱寿强、程锦玲的下线，担任代理（账号I-GT28），发展下线人员，涉案赌资110万元以上，非法获利9024元。
+吴泽天：自2018年3月起，作为邱寿强、程锦玲的下线，担任代理（账号I-GT29），发展下线人员，涉案赌资110万元以上，非法获利11394元。
+李文炳：自2017年12月起，作为邱寿强、程锦玲的下线，担任代理（账号H-GV96），发展下线人员，涉案赌资30万元以上，非法获利22843元。
+各被告人均已退赃，且认罪态度较好。
+
+二、法律分析
+（一）构成要件该当性分析
+根据三阶层理论，首先需判断行为是否符合刑法规定的构成要件。
+1. 客观构成要件
+《刑法》第三百零三条第二款规定："开设赌场的，处五年以下有期徒刑、拘役或者管制，并处罚金；情节严重的，处五年以上十年以下有期徒刑，并处罚金。"
+《最高人民法院、最高人民检察院、公安部关于办理网络赌博犯罪案件适用法律若干问题的意见》第一条明确规定："利用互联网、移动通讯终端等传输赌博视频、数据，组织赌博活动，具有下列情形之一的，属于刑法第三百零三条第二款规定的'开设赌场'行为：（一）建立赌博网站并接受投注的；（二）建立赌博网站并提供给他人组织赌博的；（三）为赌博网站担任代理并接受投注的；（四）参与赌博网站利润分成的。"
+本案中：
+邱寿强、程锦玲作为赌博网站总代理，发展下级代理和会员，接受投注并获取返利
+邱豪、林声宇、吴泽天、李文炳作为下级代理，发展下线并接受投注
+各被告人均通过微信、银行卡等方式进行赌资结算
+各被告人的行为均符合"为赌博网站担任代理并接受投注"的客观构成要件。
+2. 主观构成要件
+开设赌场罪要求行为人具有故意且以营利为目的。
+本案中：
+邱寿强供述"其参与赌博、抽水，还参与分红，其有一个上家老板，他给其做一个总代理，之后其就发展新赌客（会员）或二层代理，二层代理就发展新的会员"
+其他被告人均供述通过发展下线获取返利和分红
+各被告人均有明确的非法获利（30万元至22843元不等）
+各被告人均明知自己在为赌博网站担任代理并接受投注，且以营利为目的，符合主观构成要件。
+
+（二）违法性分析
+开设赌场行为严重扰乱社会秩序，损害社会公序良俗，具有明显的社会危害性。本案中，各被告人的行为均无正当防卫、紧急避险等违法阻却事由，因此具有违法性。
+
+（三）有责性分析
+有责性是指行为人对其违法行为应当承担刑事责任。
+本案中：
+各被告人均已达刑事责任年龄（邱寿强1989年出生，程锦玲1988年出生，邱豪1983年出生，林声宇1989年出生，吴泽天1980年出生，李文炳1985年出生）
+各被告人均具有完全刑事责任能力
+各被告人均无精神疾病等影响责任能力的情形
+因此，各被告人均具有有责性。
+
+（四）"情节严重"的认定
+根据《最高人民法院、最高人民检察院、公安部关于办理网络赌博犯罪案件适用法律若干问题的意见》第一条，利用互联网组织赌博活动，具有下列情形之一的，应当认定为"情节严重"：
+抽头渔利数额累计达到3万元以上的
+赌资数额累计达到30万元以上的
+参赌人数累计达到120人以上的
+建立赌博网站后通过提供给他人组织赌博，违法所得数额在3万元以上的
+参与赌博网站利润分成，违法所得数额在3万元以上的
+为赌博网站招募下级代理，由下级代理接受投注的
+本案中，各被告人的涉案金额均远超"情节严重"的标准：
+邱寿强、程锦玲：涉案赌资超过六百万元，非法获利30万元
+邱豪：涉案赌资210万余元，非法获利97637元
+林声宇、吴泽天：涉案赌资110万元以上
+李文炳：涉案赌资30万元以上
+因此，各被告人的行为均构成开设赌场罪且"情节严重"。
+
+三、量刑分析
+（一）量刑起点确定
+根据《最高人民法院、最高人民检察院关于常见犯罪的量刑指导意见（二）（试行）》：
+"犯罪情节一般的，在二年以下有期徒刑、拘役幅度内确定量刑起点"
+"情节严重的，在五年至六年有期徒刑幅度内确定量刑起点"
+本案中，各被告人均属"情节严重"，量刑起点应在五年至六年有期徒刑。
+
+（二）基准刑确定
+在量刑起点基础上，根据赌资数额、违法所得等增加刑罚量确定基准刑。但本案中各被告人均有多个从轻、减轻处罚情节：
+坦白情节：各被告人均如实供述罪行，根据《刑法》第六十七条第三款，可减少基准刑20%以下
+退赃情节：各被告人均已退赃，根据量刑指导意见，可减少基准刑30%以下
+初犯情节：除邱寿强外，其他被告人均系初犯，可酌情从轻
+作用大小：程锦玲在共同犯罪中作用相对较小，可认定为从犯，减少基准刑20%-50%
+认罪态度：各被告人均认罪态度较好，可酌情从轻
+
+（三）缓刑适用分析
+根据《刑法》第七十二条，对于被判处拘役、三年以下有期徒刑的犯罪分子，同时符合以下条件的，可以宣告缓刑：
+犯罪情节较轻
+有悔罪表现
+没有再犯罪的危险
+宣告缓刑对所居住社区没有重大不良影响
+本案中：
+各被告人犯罪后均如实供述、积极退赃、认罪态度好
+除邱寿强外均为初犯
+无证据表明有再犯罪危险
+均居住在昭平县，宣告缓刑对社区无重大不良影响
+因此，各被告人均符合缓刑适用条件。
+
+四、判决预测
+基于以上分析，结合广西壮族自治区量刑细则和司法实践，可能作出如下判决：
+1. 邱寿强
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑四年
+理由：
+虽涉案金额大（赌资超六百万元，获利30万元），属"情节严重"
+但具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+2. 程锦玲
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑四年
+理由：
+与邱寿强共同犯罪，但作用相对较小（从犯）
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+3. 邱豪
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑三年
+理由：
+涉案金额和获利均低于邱寿强、程锦玲
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+4. 林声宇
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑三年
+理由：
+涉案金额和获利均低于邱豪
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+5. 吴泽天
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑三年
+理由：
+涉案金额和获利与林声宇相近
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+6. 李文炳
+罪名：开设赌场罪
+刑期：有期徒刑三年，缓刑二年
+理由：
+涉案金额和获利均低于其他被告人
+具有坦白、退赃、初犯等从轻情节
+认罪态度好，悔罪表现明显
+符合缓刑适用条件
+7. 财产处理
+邱寿强、程锦玲的违法所得30万元予以没收，上缴国库
+邱豪的违法所得97637元予以没收，上缴国库
+林声宇的违法所得9024元予以没收，上缴国库
+吴泽天的违法所得11394元予以没收，上缴国库
+李文炳的违法所得22843元予以没收，上缴国库
+作案工具（手机、银行卡等）予以没收
+
+五、结论
+本案中，六名被告人的行为均构成开设赌场罪且"情节严重"，但鉴于各被告人均具有坦白、退赃、认罪态度好等从轻、减轻处罚情节，且符合缓刑适用条件，极有可能判处各被告人有期徒刑三年，适用缓刑，并处罚金，同时追缴违法所得。
+这一判决既体现了对网络赌博犯罪的严厉打击，又贯彻了宽严相济的刑事政策，符合罪责刑相适应原则，能够实现法律效果与社会效果的统一。</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Citation Section -->
+        <section class="section" id="citation">
+            <h2 class="section-title">Citation</h2>
+            <div class="citation-wrapper">
+                <button class="copy-btn" onclick="copyCitation(this)">
+                    <span>📋</span>
+                    <span>Copy</span>
+                </button>
+                <div class="citation-block">
+                    <pre id="citation-text">@misc{legalone-2025,
+  title={LegalOne: A Family of Foundation Models for Reliable Legal Reasoning},
+  author={LegalOne Team},
+  year={2025},
+  url={https://github.com/CSHaitao/LegalOne}
+}</pre>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <p>&copy; 2025 LegalOne Team. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="scrollToTop()" title="Back to Top">↑</button>
+        <button class="nav-btn" onclick="scrollToBottom()" title="Go to Bottom">↓</button>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="lightbox-close">&times;</span>
+        <img src="" alt="Full size image" id="lightbox-img">
+    </div>
+
+    <script>
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function toggleResponse(btn) {
+            const response = btn.nextElementSibling;
+            btn.classList.toggle('expanded');
+            response.classList.toggle('show');
+            btn.querySelector('span:first-child').textContent = 
+                response.classList.contains('show') ? 'Hide Full Response' : 'View Full Response';
+        }
+
+        function copyCitation(btn) {
+            const citationText = document.getElementById('citation-text').textContent;
+            navigator.clipboard.writeText(citationText).then(() => {
+                btn.classList.add('copied');
+                btn.querySelector('span:last-child').textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.querySelector('span:last-child').textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function scrollToBottom() {
+            window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: 'smooth'
+            });
+        }
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
